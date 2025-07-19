@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stylish Circular Stopwatch</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #f9f9f9, #e3f2fd);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #37474f;
+    }
+
+    .circle {
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      border: 10px solid #81d4fa;
+      background-color: #ffffffcc;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #01579b;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .circle:hover {
+      transform: scale(1.05);
+    }
+
+    .controls {
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 12px 22px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      background-color: #039be5;
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0288d1;
+    }
+
+    #laps {
+      margin-top: 20px;
+      max-height: 150px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      width: 300px;
+      text-align: left;
+      color: #37474f;
+    }
+
+    #laps li {
+      padding: 5px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    @media (max-width: 600px) {
+      .circle {
+        width: 260px;
+        height: 260px;
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>⏱ Stylish Stopwatch</h1>
+  <div class="circle" id="display">00:00:00:000</div>
+  <div class="controls">
+    <button onclick="start()">Start</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="reset()">Reset</button>
+    <button onclick="lap()">Lap</button>
+  </div>
+  <ul id="laps"></ul>
+
+  <script>
+    let [ms, s, m, h] = [0, 0, 0, 0];
+    let timer = null;
+
+    const display = document.getElementById("display");
+
+    function updateDisplay() {
+      display.innerText = 
+        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(ms).padStart(3, '0')}`;
+    }
+
+    function start() {
+      if (timer !== null) return;
+      timer = setInterval(() => {
+        ms += 10;
+        if (ms >= 1000) {
+          ms = 0; s++;
+        }
+        if (s >= 60) {
+          s = 0; m++;
+        }
+        if (m >= 60) {
+          m = 0; h++;
+        }
+        updateDisplay();
+      }, 10);
+    }
+
+    function pause() {
+      clearInterval(timer);
+      timer = null;
+    }
+
+    function reset() {
+      pause();
+      [ms, s, m, h] = [0, 0, 0, 0];
+      updateDisplay();
+      document.getElementById('laps').innerHTML = '';
+    }
+
+    function lap() {
+      const li = document.createElement("li");
+      li.innerText = display.innerText;
+      document.getElementById("laps").appendChild(li);
+    }
+  </script>
+</body>
+</html>
